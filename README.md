@@ -103,6 +103,5 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ## 🙌 Acknowledgments
 
-Inspired by best practic
-es in Unity development and modular architecture design.
+Inspired by best practices in Unity development and modular architecture design.
 
