@@ -66,7 +66,7 @@ namespace Character.Player
             _rigidbody.transform.localRotation = Quaternion.Euler(0f, direction, 0f);
         }
          
-        protected virtual bool GroundCheck()
+        private bool GroundCheck()
         {
             if (!_playerData.enableGroundCheck)
                 return false;
@@ -79,6 +79,7 @@ namespace Character.Player
             Debug.DrawRay(origin, direction * _playerData.groundCheckDistance, Color.red);
             if (hit.collider && hit.collider.gameObject != gameObject)
             {
+                Debug.Log($"Hit Object: {hit.collider.gameObject.name}");
                 return true;
             }
 
