@@ -24,7 +24,6 @@ A modular and extensible 2D character movement framework for Unity, designed to 
            ├── CharacterMovementBase.cs 
            ├── PlayerMovement.cs
            ├── PlayerController.cs 
-           ├── PlayerData.cs
            ├── InputMappingRefs
            ├── PlayerDataAsset.cs 
            └── IPlayerInputEvents.cs 
@@ -42,7 +41,8 @@ A modular and extensible 2D character movement framework for Unity, designed to 
   - `PlayerMovement`
   - `PlayerData`
   - `InputActionAsset`
-- Implements `IPlayerInputEvents`
+- Implements
+  - `IPlayerInputEvents`
   - `OnMove`
   - `OnInteract`
 
@@ -63,9 +63,6 @@ A modular and extensible 2D character movement framework for Unity, designed to 
   - `EnableGroundCheck`
   - `GroundLayerMask`
   - `GroundCheckDistance`
-
-### PlayerData
-- Runtime wrapper for `PlayerDataAsset`
 
 ---
 
