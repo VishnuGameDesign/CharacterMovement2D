@@ -17,8 +17,8 @@ namespace Character.Player
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
         [field: SerializeField] public InputActionAsset PlayerControls { get; private set; }
 
-        [field: Header("Data")]
-        [field: SerializeField] public PlayerDataAsset PlayerDataAsset { get; private set; }
+        [Header("Data")] 
+        [SerializeField] public PlayerDataAsset _playerData;
         
         [Header("Input Actions")]
         [SerializeField] private InputMappingRefs _inputMappingRefs;
@@ -31,41 +31,30 @@ namespace Character.Player
         public event MoveEventDelegate OnMove;
         public event InteractEventDelegate OnInteract;
 
-        private PlayerData _playerData = null;
         private PlayerMovement _playerMovement = null;
 
         private void OnValidate()
         {
             if (Rigidbody == null)
-            {
                 Rigidbody = GetComponent<Rigidbody2D>();
-                Rigidbody.gravityScale = 0;
-                Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
-            }
         }
 
         protected void Awake()
         {
-            _playerMovement = GetComponent<PlayerMovement>() ?? GetComponentInChildren<PlayerMovement>();
-
-            if (!_playerMovement)
+            if (Rigidbody)
             {
-                GameObject playerGO = new GameObject("PlayerMovementComponent", typeof(PlayerMovement));
-                playerGO.transform.SetParent(transform);
-                playerGO.transform.localPosition = Vector3.zero;
-                _playerMovement = playerGO.GetComponent<PlayerMovement>();
+                Rigidbody.gravityScale = 0;
+                Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
             }
+
+            CreateMovementHandler();
+            if(!_playerMovement)
+                return;
             
-            _playerData = new PlayerData(PlayerDataAsset);
-            _playerMovement.Init(Rigidbody,this, _playerData);
-
-            if (_inputMappingRefs != null)
-            {
-                _moveAction = _inputMappingRefs.moveAction;
-                _interactAction = _inputMappingRefs.interactAction; 
-            }
+            InitiateHandlers();
+            AssignInputActions();
         }
-        
+             
         private void OnEnable()
         {
             RegisterInputActions();
@@ -82,13 +71,44 @@ namespace Character.Player
             _interactAction.Disable();
         }
 
+        private void CreateMovementHandler()
+        {
+            _playerMovement = GetComponent<PlayerMovement>() ?? GetComponentInChildren<PlayerMovement>();
+            if (!_playerMovement)
+            {
+                var movementHandler = CreateHandlers<PlayerMovement>("PlayerMovementComponent");
+                if(movementHandler)
+                    _playerMovement = movementHandler;
+            }
+        }
+
+        private void InitiateHandlers()
+        {
+            _playerMovement.Init(Rigidbody, this, _playerData);
+        }
+        
+        private T CreateHandlers<T>(string gameObjectName) where T : class
+        {
+            var newGameObject = new GameObject(gameObjectName, typeof(T));
+            newGameObject.transform.SetParent(transform);
+            newGameObject.transform.localPosition = Vector3.zero;
+            return newGameObject.GetComponent<T>();
+        }
+
+        private void AssignInputActions()
+        {
+            if (_inputMappingRefs == null) 
+                return;
+            
+            _moveAction = _inputMappingRefs.moveAction;
+            _interactAction = _inputMappingRefs.interactAction;
+        }
+
         private void RegisterInputActions()
         {
-            // move action contexts
             _moveAction.performed += Move;
             _moveAction.canceled += Move;
 
-            // interact action contexts
             _interactAction.performed += Interact;
             _interactAction.canceled += Interact;
         }

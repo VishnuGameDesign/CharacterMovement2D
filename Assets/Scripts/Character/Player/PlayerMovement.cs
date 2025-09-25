@@ -13,9 +13,9 @@ namespace Character.Player
         // components received in the Init function 
         private Rigidbody2D _rigidbody;
         private IPlayerInputEvents _playerInputs; 
-        private PlayerData _playerData;
+        private PlayerDataAsset _playerData;
         
-        public void Init(Rigidbody2D rb, IPlayerInputEvents playerInputs, PlayerData playerData)
+        public void Init(Rigidbody2D rb, IPlayerInputEvents playerInputs, PlayerDataAsset playerData)
         {
             _rigidbody = rb;
             _playerInputs = playerInputs;
@@ -39,7 +39,7 @@ namespace Character.Player
         private void FixedUpdate()
         {
             IsGrounded = GroundCheck(); // only checks if "EnableGrouchCheck" is set to true
-            Vector2 targetPosition = MoveInput * (_playerData.moveSpeed * Time.fixedDeltaTime);
+            Vector2 targetPosition = MoveInput * (_playerData.MoveSpeed * Time.fixedDeltaTime);
             _rigidbody.MovePosition(_rigidbody.position + targetPosition);
         }
 
@@ -74,20 +74,20 @@ namespace Character.Player
          
         private bool GroundCheck()
         {
-            if (!_playerData.enableGroundCheck)
+            if (!_playerData.EnableGroundCheck)
                 return false;
 
-            Vector2 origin = transform.position + _playerData.groundCheckOriginOffset;
+            Vector2 origin = transform.position + _playerData.GroundCheckOriginOffset;
             Vector2 direction = Vector2.down;
 
-            RaycastHit2D hit = Physics2D.Raycast(origin, direction, _playerData.groundCheckDistance,
-                _playerData.groundLayerMask);
+            RaycastHit2D hit = Physics2D.Raycast(origin, direction, _playerData.GroundCheckDistance,
+                _playerData.GroundLayerMask);
             
-            Debug.DrawRay(origin, direction * _playerData.groundCheckDistance, Color.red);
+            Debug.DrawRay(origin, direction * _playerData.GroundCheckDistance, Color.red);
             if(!hit.collider)
                 return false;
             
-            return ((1 << gameObject.layer) & _playerData.groundLayerMask) == 0;
+            return ((1 << gameObject.layer) & _playerData.GroundLayerMask) == 0;
         }
     }
 }
