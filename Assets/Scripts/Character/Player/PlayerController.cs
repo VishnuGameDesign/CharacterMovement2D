@@ -13,18 +13,19 @@ namespace Character.Player
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour, IPlayerInputEvents
     {
-        [Header("Components")]
+        [field: Header("Components")]
         [field: SerializeField] public Rigidbody2D Rigidbody { get; private set; }
         [field: SerializeField] public InputActionAsset PlayerControls { get; private set; }
 
-        [Header("Data")]
+        [field: Header("Data")]
         [field: SerializeField] public PlayerDataAsset PlayerDataAsset { get; private set; }
+        
+        [Header("Input Actions")]
+        [SerializeField] private InputMappingRefs _inputMappingRefs;
             
         // input actions
         private InputAction _moveAction;
         private InputAction _interactAction;
-        private const string MoveActionName = "Move";
-        private const string InteractActionName = "Interact";
 
         // delegates
         public event MoveEventDelegate OnMove;
@@ -43,29 +44,40 @@ namespace Character.Player
             }
         }
 
-        private void Awake()
+        protected void Awake()
         {
-            GameObject playerGO = new GameObject("PlayerMovementComponent", typeof(PlayerMovement));
-            playerGO.transform.SetParent(transform);
-            playerGO.transform.localPosition = Vector3.zero;
-            _playerMovement = playerGO.GetComponent<PlayerMovement>();
+            _playerMovement = GetComponent<PlayerMovement>() ?? GetComponentInChildren<PlayerMovement>();
+
+            if (!_playerMovement)
+            {
+                GameObject playerGO = new GameObject("PlayerMovementComponent", typeof(PlayerMovement));
+                playerGO.transform.SetParent(transform);
+                playerGO.transform.localPosition = Vector3.zero;
+                _playerMovement = playerGO.GetComponent<PlayerMovement>();
+            }
             
             _playerData = new PlayerData(PlayerDataAsset);
             _playerMovement.Init(Rigidbody,this, _playerData);
-            
-            _moveAction = PlayerControls.FindAction(MoveActionName);
-            _interactAction = PlayerControls.FindAction(InteractActionName); 
-            RegisterInputActions();
+
+            if (_inputMappingRefs != null)
+            {
+                _moveAction = _inputMappingRefs.moveAction;
+                _interactAction = _inputMappingRefs.interactAction; 
+            }
         }
         
         private void OnEnable()
         {
+            RegisterInputActions();
+
             _moveAction.Enable();
             _interactAction.Enable();
         }
 
         private void OnDisable()
         {
+            DeregisterInputActions();
+            
             _moveAction.Disable();
             _interactAction.Disable();
         }
@@ -81,6 +93,15 @@ namespace Character.Player
             _interactAction.canceled += Interact;
         }
 
+        private void DeregisterInputActions()
+        {
+            _moveAction.performed -= Move;
+            _moveAction.canceled -= Move;
+
+            _interactAction.performed -= Interact;
+            _interactAction.canceled -= Interact;
+        }
+
         private void Move(InputAction.CallbackContext context)
         {
             var moveInput = context.ReadValue<Vector2>();
@@ -94,4 +115,3 @@ namespace Character.Player
         }
     }
 }
-

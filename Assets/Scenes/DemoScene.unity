@@ -263,7 +263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 704324731}
   - component: {fileID: 704324732}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 1090572183}
   - component: {fileID: 1090572182}
   - component: {fileID: 1090572181}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -496,6 +496,9 @@ MonoBehaviour:
   <Rigidbody>k__BackingField: {fileID: 1090572183}
   <PlayerControls>k__BackingField: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   <PlayerDataAsset>k__BackingField: {fileID: 11400000, guid: bd496d9c711b84ab0a575c4557090629, type: 2}
+  _inputMappingRefs:
+    moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    interactAction: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &1090572182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,7 +765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1768231373}
   - component: {fileID: 1768231374}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}

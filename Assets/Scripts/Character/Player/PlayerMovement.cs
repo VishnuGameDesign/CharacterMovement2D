@@ -20,19 +20,25 @@ namespace Character.Player
             _rigidbody = rb;
             _playerInputs = playerInputs;
             _playerData = playerData;
-            
+
             _playerInputs.OnMove += SetMoveInput;
+        }
+
+        private void OnEnable()
+        {
+            if(_playerInputs != null)
+                _playerInputs.OnMove += SetMoveInput;
         }
         
         private void OnDisable()
-        {
-            _playerInputs.OnMove -= SetMoveInput;
+        { 
+            if(_playerInputs != null)
+                _playerInputs.OnMove -= SetMoveInput;
         }
 
         private void FixedUpdate()
         {
             IsGrounded = GroundCheck(); // only checks if "EnableGrouchCheck" is set to true
-            
             Vector2 targetPosition = MoveInput * (_playerData.moveSpeed * Time.fixedDeltaTime);
             _rigidbody.MovePosition(_rigidbody.position + targetPosition);
         }
@@ -76,14 +82,12 @@ namespace Character.Player
 
             RaycastHit2D hit = Physics2D.Raycast(origin, direction, _playerData.groundCheckDistance,
                 _playerData.groundLayerMask);
+            
             Debug.DrawRay(origin, direction * _playerData.groundCheckDistance, Color.red);
-            if (hit.collider && hit.collider.gameObject != gameObject)
-            {
-                Debug.Log($"Hit Object: {hit.collider.gameObject.name}");
-                return true;
-            }
-
-            return false;
+            if(!hit.collider)
+                return false;
+            
+            return ((1 << gameObject.layer) & _playerData.groundLayerMask) == 0;
         }
     }
 }

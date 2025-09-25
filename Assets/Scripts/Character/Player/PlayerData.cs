@@ -10,11 +10,11 @@ namespace Character.Player
     /// </summary>
     public class PlayerData
     {
-        public float moveSpeed;
-        public bool enableGroundCheck;
-        public LayerMask groundLayerMask;
-        public float groundCheckDistance;
-        public Vector3 groundCheckOriginOffset;
+        public readonly float moveSpeed;
+        public readonly bool enableGroundCheck;
+        public readonly LayerMask groundLayerMask;
+        public readonly float groundCheckDistance;
+        public readonly Vector3 groundCheckOriginOffset;
 
         public PlayerData(PlayerDataAsset dataAsset)
         {
